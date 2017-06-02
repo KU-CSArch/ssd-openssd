@@ -1,0 +1,3 @@
+[submodule "github_repo/Cosmos-plus-OpenSSD"]
+	path = github_repo/Cosmos-plus-OpenSSD
+	url = https://github.com/Cosmos-OpenSSD/Cosmos-plus-OpenSSD.git
