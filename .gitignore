@@ -1,0 +1,15 @@
+*.o
+*.xml
+*.swp
+*~
+*.workspace
+*.project
+.codelite
+.clang
+cscope.*
+*.tar.bz2
+.vscode
+.tags
+*.dat
+*.db
+doxygen
