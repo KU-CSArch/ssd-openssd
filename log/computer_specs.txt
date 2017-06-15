@@ -1,0 +1,19 @@
+# Computer machines specification
+
+1. hahoe (development PC)
+ - CPU: Intel i5-2310 (4) @ 3.2GHz
+ - RAM: 8GB
+ - Board: H61M-S2H (Gigabyte)
+ - Kernel: 3.19.0-32-generic
+
+2. ossd0 (host PC)
+ - CPU: Intel i3-2100 (4) @ 3.1GHz
+ - RAM: 8GB
+ - Board: TH67+ 6.0
+ - Kernel: 3.19.0-32-generic
+
+3. intel p67
+ - CPU: Intel i7-2600K @ 3.4GHz
+ - RAM: 8GB
+ - Board: Intel DP67BA
+
