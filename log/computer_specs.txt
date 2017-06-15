@@ -1,19 +1,28 @@
 # Computer machines specification
 
 1. hahoe (development PC)
- - CPU: Intel i5-2310 (4) @ 3.2GHz
+ - CPU: Intel i5-2310 (4) @ 3.2GHz (passmark: 5501)
  - RAM: 8GB
  - Board: H61M-S2H (Gigabyte)
  - Kernel: 3.19.0-32-generic
 
 2. ossd0 (host PC)
- - CPU: Intel i3-2100 (4) @ 3.1GHz
+ - CPU: Intel i3-2100 (4) @ 3.1GHz (passmark: 3662)
  - RAM: 8GB
  - Board: TH67+ 6.0
  - Kernel: 3.19.0-32-generic
 
 3. intel p67
- - CPU: Intel i7-2600K @ 3.4GHz
+ - CPU: Intel i7-2600K @ 3.4GHz (passmark: 8480)
  - RAM: 8GB
  - Board: Intel DP67BA
+ - GPU: Tesla C2070
 
+4. issd1 (host PC of issd board)
+ - CPU: Intel i5-6500 @ 3.2GHz (passmark: 7216)
+ - RAM: 8GB
+
+5. Gigabyte Z97X
+ - CPU: Intel i5-4590 @ 3.3GHz (passmark 7228)
+ - RAM: 8GB
+ - Board: Z97X-UD3H
