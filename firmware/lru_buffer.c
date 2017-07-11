@@ -59,6 +59,10 @@ void LRUBufInit()
 	bufMap = (struct bufArray*) BUFFER_MAP_ADDR;
 	bufLruList = (struct bufLruArray*) BUFFER_LRU_LIST_ADDR;
 
+	GK_INIT_PRINT("GK: LRU buffer addr: 0x%X\r\n", BUFFER_MAP_ADDR);
+	GK_INIT_PRINT("GK: LRU list addr: 0x%X\r\n", BUFFER_LRU_LIST_ADDR);
+	GK_INIT_PRINT("GK: LRU buffer entry: %d (16*%d)\r\n", BUF_ENTRY_NUM, DIE_NUM);	// 16 * DIE_NUM
+
 	int i,j,tempEntry;
 	for(i = 0; i < BUF_ENTRY_NUM; i++)
 	{
@@ -115,6 +119,7 @@ unsigned int AllocateBufEntry(unsigned int lpn)
 		return evictionEntry;
 }
 
+/// gunjae: check LRU buffer is hit or not.
 unsigned int CheckBufHit(unsigned int lpn)
 {
 	unsigned int dieNo = lpn % DIE_NUM;

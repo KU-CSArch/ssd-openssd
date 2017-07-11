@@ -222,6 +222,7 @@ unsigned int get_nvme_cmd(unsigned short *qID, unsigned short *cmdSlotTag, unsig
 {
 	NVME_CMD_FIFO_REG nvmeReg;
 	
+	// gunjae: read from NVMe command FIFO
 	nvmeReg.dword = IO_READ32(NVME_CMD_FIFO_REG_ADDR);
 
 	if(nvmeReg.cmdValid == 1)
@@ -232,6 +233,7 @@ unsigned int get_nvme_cmd(unsigned short *qID, unsigned short *cmdSlotTag, unsig
 		*cmdSlotTag = nvmeReg.cmdSlotTag;
 		*cmdSeqNum = nvmeReg.cmdSeqNum;
 
+		// gunjae: read 64 bytes (16 words) from SRAM (one NVMe command size = 64 bytes)
 		addr = NVME_CMD_SRAM_ADDR + (nvmeReg.cmdSlotTag * 64);
 		for(idx = 0; idx < 16; idx++)
 			*(cmdDword + idx) = IO_READ32(addr + (idx * 4));
@@ -331,6 +333,9 @@ void set_direct_tx_dma(unsigned int devAddr, unsigned int pcieAddrH, unsigned in
 	hostDmaReg.dmaDirection = HOST_DMA_TX_DIRECTION;
 	hostDmaReg.dmaLen = len;
 
+	GK_DMA_PRINT("DMA_TX: devAddr[%X] type[%d] dir[%d] len[%d] pciAddr[0x%0X, 0x%0X]\r\n", 
+		hostDmaReg.devAddr, hostDmaReg.dmaType, hostDmaReg.dmaDirection, hostDmaReg.dmaLen, hostDmaReg.pcieAddrH, hostDmaReg.pcieAddrL);
+
 	IO_WRITE32(HOST_DMA_CMD_FIFO_REG_ADDR, hostDmaReg.dword[0]);
 	IO_WRITE32((HOST_DMA_CMD_FIFO_REG_ADDR + 4), hostDmaReg.dword[1]);
 	IO_WRITE32((HOST_DMA_CMD_FIFO_REG_ADDR + 8), hostDmaReg.dword[2]);
@@ -355,6 +360,9 @@ void set_direct_rx_dma(unsigned int devAddr, unsigned int pcieAddrH, unsigned in
 	hostDmaReg.dmaType = HOST_DMA_DIRECT_TYPE;
 	hostDmaReg.dmaDirection = HOST_DMA_RX_DIRECTION;
 	hostDmaReg.dmaLen = len;
+
+	GK_DMA_PRINT("DMA_RX: devAddr[%X] type[%d] dir[%d] len[%d] pciAddr[0x%0X, 0x%0X]\r\n", 
+		hostDmaReg.devAddr, hostDmaReg.dmaType, hostDmaReg.dmaDirection, hostDmaReg.dmaLen, hostDmaReg.pcieAddrH, hostDmaReg.pcieAddrL);
 
 	IO_WRITE32(HOST_DMA_CMD_FIFO_REG_ADDR, hostDmaReg.dword[0]);
 	IO_WRITE32((HOST_DMA_CMD_FIFO_REG_ADDR + 4), hostDmaReg.dword[1]);
@@ -384,6 +392,9 @@ void set_auto_tx_dma(unsigned int cmdSlotTag, unsigned int cmd4KBOffset, unsigne
 	hostDmaReg.dmaDirection = HOST_DMA_TX_DIRECTION;
 	hostDmaReg.cmd4KBOffset = cmd4KBOffset;
 	hostDmaReg.cmdSlotTag = cmdSlotTag;
+
+	GK_DMA_PRINT("DMA_TX: devAddr[%X] type[%d] dir[%d] len[%d] off[0x%X]\r\n", 
+		hostDmaReg.devAddr, hostDmaReg.dmaType, hostDmaReg.dmaDirection, hostDmaReg.dmaLen, hostDmaReg.cmd4KBOffset);
 
 	IO_WRITE32(HOST_DMA_CMD_FIFO_REG_ADDR, hostDmaReg.dword[0]);
 	//IO_WRITE32((HOST_DMA_CMD_FIFO_REG_ADDR + 4), hostDmaReg.dword[1]);
@@ -415,6 +426,9 @@ void set_auto_rx_dma(unsigned int cmdSlotTag, unsigned int cmd4KBOffset, unsigne
 	hostDmaReg.dmaDirection = HOST_DMA_RX_DIRECTION;
 	hostDmaReg.cmd4KBOffset = cmd4KBOffset;
 	hostDmaReg.cmdSlotTag = cmdSlotTag;
+
+	GK_DMA_PRINT("DMA_RX: devAddr[%X] type[%d] dir[%d] len[%d] off[0x%X]\r\n", 
+		hostDmaReg.devAddr, hostDmaReg.dmaType, hostDmaReg.dmaDirection, hostDmaReg.dmaLen, hostDmaReg.cmd4KBOffset);
 
 	IO_WRITE32(HOST_DMA_CMD_FIFO_REG_ADDR, hostDmaReg.dword[0]);
 	//IO_WRITE32((HOST_DMA_CMD_FIFO_REG_ADDR + 4), hostDmaReg.dword[1]);

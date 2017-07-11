@@ -62,8 +62,18 @@
 
 #include "../util.h"
 
+/// gunjae: if NVMe command is read, this function will be called
 void handle_nvme_io_read(unsigned int cmdSlotTag, NVME_IO_COMMAND *nvmeIOCmd)
 {
+	////////////////////////////////////////////////////////////
+	/// gunjae: NVMe IO commands are paresed here
+	///         For the past project, we exploited <FLAGS> filed (next to OpCode) to identify the special commands
+	///         Here, <FLAGS> field is split into <PDST, RESERVED[4:0], FUSE[1:0]>
+	unsigned char flags = parse_flags_from_nvme_io_cmd(nvmeIOCmd);
+	GK_CMD_PRINT("NVMe rd cmd[%d]: Opc[%X] flags[%X] CmdID[%X] nLB[%d] prp1[%X] prp2[%X]\r\n", 
+		cmdSlotTag, nvmeIOCmd->OPC, flags, nvmeIOCmd->CID, nvmeIOCmd->dword12 & 0xFFFF, nvmeIOCmd->PRP1[0], nvmeIOCmd->PRP2[0]);
+	///////////
+
 	IO_READ_COMMAND_DW12 readInfo12;
 	//IO_READ_COMMAND_DW13 readInfo13;
 	//IO_READ_COMMAND_DW15 readInfo15;
@@ -95,6 +105,15 @@ void handle_nvme_io_read(unsigned int cmdSlotTag, NVME_IO_COMMAND *nvmeIOCmd)
 
 void handle_nvme_io_write(unsigned int cmdSlotTag, NVME_IO_COMMAND *nvmeIOCmd)
 {
+	////////////////////////////////////////////////////////////
+	/// gunjae: NVMe IO commands are paresed here
+	///         For the past project, we exploited <FLAGS> filed (next to OpCode) to identify the special commands
+	///         Here, <FLAGS> field is split into <PDST, RESERVED[4:0], FUSE[1:0]>
+	unsigned char flags = parse_flags_from_nvme_io_cmd(nvmeIOCmd);
+	GK_CMD_PRINT("NVMe wr cmd[%d]: Opc[%X] flags[%X] CmdID[%X] nLB[%d] prp1[%X] prp2[%X]\r\n", 
+		cmdSlotTag, nvmeIOCmd->OPC, flags, nvmeIOCmd->CID, nvmeIOCmd->dword12 & 0xFFFF, nvmeIOCmd->PRP1[0], nvmeIOCmd->PRP2[0]);
+	///////////
+
 	IO_READ_COMMAND_DW12 writeInfo12;
 	//IO_READ_COMMAND_DW13 writeInfo13;
 	//IO_READ_COMMAND_DW15 writeInfo15;

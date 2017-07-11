@@ -390,6 +390,8 @@ void handle_nvme_admin_cmd(NVME_COMMAND *nvmeCmd)
 	nvmeAdminCmd = (NVME_ADMIN_COMMAND*)nvmeCmd->cmdDword;
 	opc = (unsigned int)nvmeAdminCmd->OPC;
 
+	// gunjae
+	GK_CMD_PRINT("NVMe adm: Opc[%X] prp1[%X] prp2[%X] CID[%d]\r\n", nvmeAdminCmd->OPC, nvmeAdminCmd->PRP1[0], nvmeAdminCmd->PRP2[0], nvmeAdminCmd->CID);
 
 	needCpl = 1;
 	needSlotRelease = 0;

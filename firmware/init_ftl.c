@@ -84,6 +84,9 @@ V2FMCRegisters* chCtlReg[CHANNEL_NUM];
 
 void InitChCtlReg()
 {
+	GK_INIT_PRINT("GK: InitChCtlReg base addr: 0x%X\r\n", XPAR_TIGER4NSC_0_BASEADDR);
+	GK_INIT_PRINT("GK: InitChCtlReg base addr: 0x%X\r\n", XPAR_TIGER4NSC_1_BASEADDR);
+
 	chCtlReg[0] = (V2FMCRegisters*) XPAR_TIGER4NSC_0_BASEADDR;
 	chCtlReg[1] = (V2FMCRegisters*) XPAR_TIGER4NSC_1_BASEADDR;
 	chCtlReg[2] = (V2FMCRegisters*) XPAR_TIGER4NSC_2_BASEADDR;
@@ -100,6 +103,11 @@ void InitFtlMapTable()
 	blockMap = (struct bmArray*)(BLOCK_MAP_ADDR);
 	dieBlock = (struct dieArray*)(DIE_MAP_ADDR);
 	gcMap = (struct gcArray*)(GC_MAP_ADDR);
+
+	GK_INIT_PRINT("GK: FTL page map addr: 0x%X\r\n", PAGE_MAP_ADDR);
+	GK_INIT_PRINT("GK: FTL block map addr: 0x%X\r\n", BLOCK_MAP_ADDR);
+	GK_INIT_PRINT("GK: FTL die block map addr: 0x%X\r\n", DIE_MAP_ADDR);
+	GK_INIT_PRINT("GK: FTL gc map addr: 0x%X\r\n", GC_MAP_ADDR);
 
 	InitPageMap();
 	InitBlockMap(GC_BUFFER_ADDR);
@@ -121,6 +129,8 @@ void InitDieReqQueue()
 
 	reservedReq = 0;
 	badBlockUpdate = 0;
+
+	GK_INIT_PRINT("GK: ReqQ init, Ch[%d] Way[%d], QueueDepth[%d]\r\n", CHANNEL_NUM, WAY_NUM, REQ_QUEUE_DEPTH);
 
 	int chNo,wayNo,queueDepth;
 	for(chNo=0; chNo<CHANNEL_NUM; ++chNo)

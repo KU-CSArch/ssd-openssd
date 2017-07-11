@@ -117,6 +117,7 @@ void PushToReqQueue(P_LOW_LEVEL_REQ_INFO lowLevelCmd)
 
 	dieStatusTable->dieStatusEntry[chNo][wayNo].reqQueueEmpty = 0;
 	rear = rqPointer->rqPointerEntry[chNo][wayNo].rear;
+	// gunjae: RxDMA for write commands
 	if(lowLevelCmd->request >= LLSCommand_RxDMA)
 	{
 		reqQueue->reqEntry[rear][chNo][wayNo].devAddr = lowLevelCmd->devAddr;

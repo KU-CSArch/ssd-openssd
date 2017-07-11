@@ -127,6 +127,8 @@ int main()
 
 	dev_irq_init();
 
+	GK_INIT_PRINT("GK: firmware will call nvme_main()\r\n");
+
 	nvme_main();
 
 	xil_printf("done\r\n");

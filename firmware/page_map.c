@@ -91,6 +91,9 @@ void InitPageMap()
 {
 	// page status initialization, allows lpn, ppn access
 	int i, j;
+	
+	GK_INIT_PRINT("InitPageMap: nDie[%d] nPage/Die[%d]\r\n", DIE_NUM, PAGE_NUM_PER_DIE);
+	
 	for(i=0 ; i<DIE_NUM ; i++)
 	{
 		for(j=0 ; j<PAGE_NUM_PER_DIE ; j++)
@@ -107,6 +110,8 @@ void InitBlockMap(unsigned int badBlockTableAddr)
 {
 	int i, j, phyBlock;
 
+	GK_INIT_PRINT("InitBlockMap: nBlk/Die[%d]\r\n", BLOCK_NUM_PER_DIE);
+
 	xil_printf("Press 'X' to re-make the bad block table.\r\n");
 	if (inbyte() == 'X')
 	{
@@ -118,6 +123,8 @@ void InitBlockMap(unsigned int badBlockTableAddr)
 		xil_printf("Done.\r\n");
 	}
 
+	GK_INIT_PRINT("GK: recover bad block table...\r\n");
+	
 	RecoverBadBlockTable(badBlockTableAddr);
 
 	xil_printf("[ block erasure start. ]\r\n");
@@ -477,6 +484,8 @@ int PmRead(P_BUFFER_REQ_INFO bufCmd)
 	unsigned int dieNo = bufCmd->lpn % DIE_NUM;
 	unsigned int dieLpn = bufCmd->lpn / DIE_NUM;
 
+	GK_FTL_PRINT("FTL PageRd [0x%0X]: die[%d] lpn[0x%0X]->ppn[0x%0X]\r\n", bufCmd->lpn, dieNo, dieLpn, pageMap->pmEntry[dieNo][dieLpn].ppn);
+
 	if (pageMap->pmEntry[dieNo][dieLpn].ppn != 0xffffffff)
 	{
 		lowLevelCmd.rowAddr = pageMap->pmEntry[dieNo][dieLpn].ppn;
@@ -525,12 +534,16 @@ int PmWrite(P_BUFFER_REQ_INFO bufCmd)
 	lowLevelCmd.wayNo = dieNo / CHANNEL_NUM;
 	lowLevelCmd.request = V2FCommand_ProgramPage;
 
+	// gunjae: FTL information is update here, and ProgramPage command is delivered to NAND flash controllers
+	GK_FTL_PRINT("FTL PageWr [0x%0X]: die[%d] lpn[0x%0X]->ppn[0x%0X]\r\n", bufCmd->lpn, dieNo, dieLpn, lowLevelCmd.rowAddr);
+
 	PushToReqQueue(&lowLevelCmd);
 	UpdateMetaForInvalidate(bufCmd->lpn);
 
 	// pageMap update
 	pageMap->pmEntry[dieNo][dieLpn].ppn = lowLevelCmd.rowAddr;
 	pageMap->pmEntry[dieNo][lowLevelCmd.rowAddr].lpn = dieLpn;
+	//GK_FTL_PRINT("FTL PageWr [0x%0X]: die[%d] lpn[0x%0X]->ppn[0x%0X]\r\n", bufCmd->lpn, dieNo, dieLpn, lowLevelCmd.rowAddr);
 
 	reservedReq = 1;
 	return 0;
