@@ -21,6 +21,8 @@
 #include "nvme/nvme.h"
 #include "xil_printf.h"	// for printf()
 
+#define DMA_DIRECT_TEST 0
+
 // logging on/off (yunho's)
 //#define FI_PRINT 0
 

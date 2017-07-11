@@ -88,8 +88,11 @@
 
 // gunjae added
 #include "util.h"
+#include "nvme/io_access.h"
 
 extern unsigned int g_spcode_page_filtered_out;
+extern unsigned int g_tick;
+////////////
 
 struct reqArray* reqQueue;
 struct rqPointerArray* rqPointer;
@@ -127,6 +130,10 @@ void PushToReqQueue(P_LOW_LEVEL_REQ_INFO lowLevelCmd)
 		reqQueue->reqEntry[rear][chNo][wayNo].bufferEntry = lowLevelCmd->bufferEntry;
 		reqQueue->reqEntry[rear][chNo][wayNo].request = lowLevelCmd->request;
 		rqPointer->rqPointerEntry[chNo][wayNo].rear = (rear + 1) % REQ_QUEUE_DEPTH;
+	#if (DMA_DIRECT_TEST==1)
+		if (g_tick%2==0)
+			reqQueue->reqEntry[rear][chNo][wayNo].reserved = 0x99;
+	#endif
 	}
 	else
 	{
@@ -228,7 +235,45 @@ int PopFromReqQueue(int chNo, int wayNo)
 		unsigned int dmaIndex = reqQueue->reqEntry[front][chNo][wayNo].startDmaIndex;
 		unsigned int sectorOffset = 0;
 		unsigned int bufferEntry = reqQueue->reqEntry[front][chNo][wayNo].bufferEntry;
+	#if (DMA_DIRECT_TEST==1)
+		unsigned int txSpcode = (reqQueue->reqEntry[front][chNo][wayNo].reserved==0x99) ? 1: 0;
+	#endif
+		unsigned int ptr_spcode_page_filtered_out = &g_spcode_page_filtered_out;
 
+	#if (DMA_DIRECT_TEST==1)
+		if (txSpcode)
+		{
+			// gunjae: direct DMA
+			GK_DMA_PRINT("GK: DIRECT DMA\r\n");
+			unsigned int cmdAddr;
+			unsigned int prp[2];
+			//unsigned int prpLen;
+			cmdAddr = NVME_CMD_SRAM_ADDR + (reqQueue->reqEntry[front][chNo][wayNo].cmdSlotTag * 64);
+			*(prp + 0) = IO_READ32(cmdAddr + 6*4);
+			*(prp + 1) = IO_READ32(cmdAddr + 7*4);
+			set_direct_tx_dma( ptr_spcode_page_filtered_out, prp[1], prp[0], sizeof(unsigned int) );
+			check_direct_tx_dma_done();
+			bufMap->bufEntry[bufferEntry].txDmaExe = 0;	// no dma check
+			// completion
+			NVME_COMPLETION nvmeCPL;
+			nvmeCPL.dword[0] = 0;
+			nvmeCPL.specific = 0x0;
+			set_auto_nvme_cpl(reqQueue->reqEntry[front][chNo][wayNo].cmdSlotTag, nvmeCPL.specific, nvmeCPL.statusFieldWord);
+		}
+		else
+		{
+			while(sectorOffset < reqQueue->reqEntry[front][chNo][wayNo].subReqSect)
+			{
+				set_auto_tx_dma(reqQueue->reqEntry[front][chNo][wayNo].cmdSlotTag, dmaIndex, devAddr);
+				sectorOffset++;
+				dmaIndex++;
+				devAddr += SECTOR_SIZE_FTL;
+			}
+			bufMap->bufEntry[bufferEntry].txDmaExe = 1;
+			bufMap->bufEntry[bufferEntry].txDmaTail = g_hostDmaStatus.fifoTail.autoDmaTx;
+			bufMap->bufEntry[bufferEntry].txDmaOverFlowCnt = g_hostDmaAssistStatus.autoDmaTxOverFlowCnt;
+		}
+	#else	// original
 		while(sectorOffset < reqQueue->reqEntry[front][chNo][wayNo].subReqSect)
 		{
 			set_auto_tx_dma(reqQueue->reqEntry[front][chNo][wayNo].cmdSlotTag, dmaIndex, devAddr);
@@ -239,6 +284,7 @@ int PopFromReqQueue(int chNo, int wayNo)
 		bufMap->bufEntry[bufferEntry].txDmaExe = 1;
 		bufMap->bufEntry[bufferEntry].txDmaTail = g_hostDmaStatus.fifoTail.autoDmaTx;
 		bufMap->bufEntry[bufferEntry].txDmaOverFlowCnt = g_hostDmaAssistStatus.autoDmaTxOverFlowCnt;
+	#endif	// DMA_DIRECT_TEST
 
 		rqPointer->rqPointerEntry[chNo][wayNo].front = (rqPointer->rqPointerEntry[chNo][wayNo].front + 1) % REQ_QUEUE_DEPTH;
 		return 0;

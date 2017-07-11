@@ -70,7 +70,9 @@
 #include "../lru_buffer.h"
 #include "../low_level_scheduler.h"
 
+// gunjae added
 #include "../util.h"
+unsigned int g_tick;
 
 volatile NVME_CONTEXT g_nvmeTask;
 
@@ -98,6 +100,9 @@ void nvme_main()
 	EmptyLowLevelQ(SUB_REQ_QUEUE);
 
 	InitFtlMapTable();
+
+	// gunjae: tick, this value is reset here, and accumulated by every while loop
+	g_tick = 0;
 
 	xil_printf("\r\nFTL reset complete!!! \r\n");
 	xil_printf("Turn on the host PC \r\n");
@@ -191,6 +196,8 @@ void nvme_main()
 
 		if(exeLlr && reservedReq)
 			ExeLowLevelReq(SUB_REQ_QUEUE);
+
+		g_tick++;
 	}
 }
 
