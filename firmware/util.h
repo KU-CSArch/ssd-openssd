@@ -36,11 +36,13 @@
 	#define GK_INIT_PRINT(args...) xil_printf(args)
 	#define GK_CMD_PRINT(args...) xil_printf(args)
 	#define GK_DMA_PRINT(args...) xil_printf(args)
+	#define GK_FTL_PRINT(args...) xil_printf(args)
 #else
 	#define GK_PRINT(args...) xil_printf(args)
 	#define GK_INIT_PRINT(args...)
 	#define GK_CMD_PRINT(args...)
 	#define GK_DMA_PRINT(args...)
+	#define GK_FTL_PRINT(args...)
 #endif	// VERBOSE
 
 inline unsigned char parse_flags_from_nvme_io_cmd(NVME_IO_COMMAND *nvmeIOCmd);

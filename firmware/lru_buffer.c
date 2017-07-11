@@ -51,6 +51,8 @@
 #include	"nvme/host_lld.h"
 #include	"low_level_scheduler.h"
 
+#include "util.h"
+
 struct bufArray* bufMap;
 struct bufLruArray* bufLruList;
 
