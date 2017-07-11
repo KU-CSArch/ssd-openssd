@@ -84,7 +84,7 @@
 #define	MAX_LUN_NUM_PER_DIE		2
 #define	BLOCK_SIZE_MB			((PAGE_SIZE * PAGE_NUM_PER_BLOCK) / (1024 * 1024))
 
-#define	CHANNEL_NUM				2
+#define	CHANNEL_NUM				8
 #define	MAX_CHANNEL_NUM			8
 #define	WAY_NUM					8
 #define	MAX_WAY_NUM				8
