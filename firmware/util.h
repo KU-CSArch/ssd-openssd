@@ -28,7 +28,7 @@
 //FI on/off (1:on, 0:off)
 //#define FI_ON 0
 
-#define VERBOSE 0
+#define VERBOSE 1
 
 // gunjae's functions for monitoring
 #if (VERBOSE==1)
