@@ -60,6 +60,8 @@
 
 #include "../lru_buffer.h"
 
+#include "../util.h"
+
 void handle_nvme_io_read(unsigned int cmdSlotTag, NVME_IO_COMMAND *nvmeIOCmd)
 {
 	IO_READ_COMMAND_DW12 readInfo12;

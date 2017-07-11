@@ -77,6 +77,8 @@
 #include "nvme/host_lld.h"
 #include <assert.h>
 
+#include "util.h"
+
 struct pmArray* pageMap;
 struct bmArray* blockMap;
 struct dieArray* dieBlock;

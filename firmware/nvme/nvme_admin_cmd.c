@@ -55,6 +55,8 @@
 #include "nvme_identify.h"
 #include "nvme_admin_cmd.h"
 
+#include "../util.h"
+
 extern NVME_CONTEXT g_nvmeTask;
 
 unsigned int get_num_of_queue(unsigned int dword11)

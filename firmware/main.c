@@ -69,6 +69,7 @@
 #include "nvme/nvme_main.h"
 #include "nvme/host_lld.h"
 
+#include "util.h"
 
 XScuGic GicInstance;
 

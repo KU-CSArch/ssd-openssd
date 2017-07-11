@@ -70,6 +70,8 @@
 #include "../lru_buffer.h"
 #include "../low_level_scheduler.h"
 
+#include "../util.h"
+
 volatile NVME_CONTEXT g_nvmeTask;
 
 void nvme_main()

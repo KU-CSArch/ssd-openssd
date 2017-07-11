@@ -75,6 +75,8 @@
 #include "low_level_scheduler.h"
 #include "memory_map.h"
 
+#include "util.h"
+
 unsigned int badBlockSize;
 unsigned int beforeNandReset;
 unsigned int storageCapacity_L;

@@ -60,6 +60,7 @@
 #include "nvme.h"
 #include "host_lld.h"
 
+#include "../util.h"
 
 extern NVME_CONTEXT g_nvmeTask;
 HOST_DMA_STATUS g_hostDmaStatus;

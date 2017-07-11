@@ -86,6 +86,8 @@
 #include "nvme/host_lld.h"
 #include <assert.h>
 
+#include "util.h"
+
 struct reqArray* reqQueue;
 struct rqPointerArray* rqPointer;
 struct subReqArray*  subReqQueue;
