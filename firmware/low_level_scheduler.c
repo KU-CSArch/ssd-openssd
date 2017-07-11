@@ -86,7 +86,10 @@
 #include "nvme/host_lld.h"
 #include <assert.h>
 
+// gunjae added
 #include "util.h"
+
+extern unsigned int g_spcode_page_filtered_out;
 
 struct reqArray* reqQueue;
 struct rqPointerArray* rqPointer;
