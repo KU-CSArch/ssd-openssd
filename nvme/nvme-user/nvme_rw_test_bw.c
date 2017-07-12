@@ -14,7 +14,7 @@
 #include <time.h>
 #define EN_CHECK_ERR 1
 #define EN_WR (1 | EN_CHECK_ERR)
-#define LBA_BASE 0x200
+#define LBA_BASE 0x201
 #define PAGE_PER_CMD 4
 #define ITER 1
 

@@ -1,0 +1,24 @@
+Firmware memory map
+
+mmap (MB): 0x100 -> 256 for BUFFER
+mmap (MB): 0x110 -> 272 for SPARE
+mmap (MB): 0x110 -> 272 for GC_BUFFER
+----------------------------------
+mmap (MB): 0x123 -> 291 for COMPLETE_TABLE
+mmap (MB): 0x123 -> 291 for ERROR_INFO_TABLE
+mmap (MB): 0x123 -> 291 for PAY_LOAD
+----------------------------------
+mmap (MB): 0x125 -> 293 for BUFFER_MAP
+mmap (MB): 0x125 -> 293 for BUFFER_LRU_LIST
+mmap (MB): 0x125 -> 293 for PAGE_MAP
+mmap (MB): 0x325 -> 805 for BLOCK_MAP
+mmap (MB): 0x32D -> 813 for DIE_MAP
+mmap (MB): 0x32D -> 813 for GC_MAP
+mmap (MB): 0x32D -> 813 for REQ_QUEUE
+mmap (MB): 0x32D -> 813 for REQ_QUEUE_POINTER
+mmap (MB): 0x32D -> 813 for SUB_REQ_QUEUE
+mmap (MB): 0x32D -> 813 for SUB_REQ_QUEUE_POINTER
+mmap (MB): 0x32D -> 813 for DIE_STATUS
+mmap (MB): 0x32D -> 813 for NEW_BAD_BLOCK_TABLE
+mmap (MB): 0x32D -> 813 for RETRY_LIMIT_TABLE
+mmap (MB): 0x32D -> 813 for WAY_PRIORITY_TABLE
