@@ -102,6 +102,15 @@ struct gcArray {
 	struct gcEntry gcEntry[DIE_NUM][PAGE_NUM_PER_BLOCK + 1];
 };
 
+// gunjae: temporary page buffer
+struct tempPage {
+	unsigned int dword[1024];	// 4KB size
+};
+
+struct tempPageArray {
+	struct tempPage sector[128];	// 0.5MB
+};
+
 void InitPageMap();
 void InitBlockMap(unsigned int badBlockTableAddr);
 void InitDieBlock();
@@ -124,6 +133,10 @@ extern struct pmArray* pageMap;
 extern struct bmArray* blockMap;
 extern struct dieArray* dieBlock;
 extern struct gcArray* gcMap;
+
+// gunjae: temporary page buffer
+extern struct tempPageArray* tempPageBuf;
+void InitTempPageBuffer();
 
 extern unsigned int metadataBlockNo;
 

@@ -54,6 +54,8 @@
 	#define GK_FTL_PRINT(args...)
 #endif	// VERBOSE
 
+#define GK_MMAP_PRINT(A,B) xil_printf("mmap (MB): 0x%X -> %d for %s\r\n", A>>20, A>>20, B)
+
 inline unsigned char parse_flags_from_nvme_io_cmd(NVME_IO_COMMAND *nvmeIOCmd);
 inline unsigned char get_flags_from_cmd_slot_tag(unsigned int cmdSlotTag);
 

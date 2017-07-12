@@ -114,6 +114,9 @@ void InitFtlMapTable()
 	InitDieBlock();
 	InitGcMap();
 
+	// gunjae
+	InitTempPageBuffer();
+
 	storageCapacity_L = (SSD_SIZE - (FREE_BLOCK_SIZE + METADATA_BLOCK_SIZE + badBlockSize + OVER_PROVISION_BLOCK_SIZE)) * ((1024*1024) / SECTOR_SIZE_FTL);
 
 	xil_printf("[ storage capacity %d MB ]\r\n", storageCapacity_L / ((1024*1024) / SECTOR_SIZE_FTL));

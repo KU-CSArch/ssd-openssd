@@ -66,10 +66,14 @@
 #include "lru_buffer.h"
 #include "page_map.h"
 
+// gunjae: temporary page buffer (1MB = 256 sectors)
+#define PAGE_TEMP_BUFFER_ADDR   (BUFFER_ADDR - 1024*1024)
+
 // Uncached & Unbuffered
 #define BUFFER_ADDR 		0x10000000
 #define SPARE_ADDR			(BUFFER_ADDR + BUF_ENTRY_NUM * BUF_ENTRY_SIZE)
 #define GC_BUFFER_ADDR		(SPARE_ADDR + SPARE_SIZE * DIE_NUM)
+// GC_BUFFER_SIZE = PAEG_SIZE * DIE_NUM?
 
 #define COMPLETE_TABLE_ADDR		0x12300000
 #define ERROR_INFO_TABLE_ADDR	(COMPLETE_TABLE_ADDR + sizeof(struct completeArray))

@@ -84,6 +84,15 @@ struct bmArray* blockMap;
 struct dieArray* dieBlock;
 struct gcArray* gcMap;
 
+// gunjae: temporary page buffer
+struct tempPageArray* tempPageBuf;
+
+void InitTempPageBuffer()
+{
+	GK_INIT_PRINT("InitTempPageBuffer: %X (%d) size(%d KB)\r\n", tempPageBuf, tempPageBuf, sizeof(struct tempPageArray)>>10);
+	tempPageBuf = (struct tempPageArray*)(PAGE_TEMP_BUFFER_ADDR);
+}
+
 // A free block selected to save meta-data
 unsigned int metadataBlockNo;
 

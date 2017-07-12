@@ -91,6 +91,30 @@ void nvme_main()
 	g_hostDmaAssistStatus.autoDmaRxOverFlowCnt = 0;
 	g_hostDmaAssistStatus.autoDmaTxOverFlowCnt = 0;
 
+	// gunjae: display memory map information
+	GK_MMAP_PRINT(BUFFER_ADDR,"BUFFER");
+	GK_MMAP_PRINT(SPARE_ADDR,"SPARE");
+	GK_MMAP_PRINT(GC_BUFFER_ADDR,"GC_BUFFER");
+	xil_printf("----------------------------------\r\n");
+	GK_MMAP_PRINT(COMPLETE_TABLE_ADDR,"COMPLETE_TABLE");
+	GK_MMAP_PRINT(ERROR_INFO_TABLE_ADDR,"ERROR_INFO_TABLE");
+	GK_MMAP_PRINT(PAY_LOAD_ADDR,"PAY_LOAD");
+	xil_printf("----------------------------------\r\n");
+	GK_MMAP_PRINT(BUFFER_MAP_ADDR,"BUFFER_MAP");
+	GK_MMAP_PRINT(BUFFER_LRU_LIST_ADDR,"BUFFER_LRU_LIST");
+	GK_MMAP_PRINT(PAGE_MAP_ADDR,"PAGE_MAP");
+	GK_MMAP_PRINT(BLOCK_MAP_ADDR,"BLOCK_MAP");
+	GK_MMAP_PRINT(DIE_MAP_ADDR,"DIE_MAP");
+	GK_MMAP_PRINT(GC_MAP_ADDR,"GC_MAP");
+	GK_MMAP_PRINT(REQ_QUEUE_ADDR,"REQ_QUEUE");
+	GK_MMAP_PRINT(REQ_QUEUE_POINTER_ADDR,"REQ_QUEUE_POINTER");
+	GK_MMAP_PRINT(SUB_REQ_QUEUE_ADDR,"SUB_REQ_QUEUE");
+	GK_MMAP_PRINT(SUB_REQ_QUEUE_POINTER_ADDR,"SUB_REQ_QUEUE_POINTER");
+	GK_MMAP_PRINT(DIE_STATUS_TABLE_ADDR,"DIE_STATUS");
+	GK_MMAP_PRINT(NEW_BAD_BLOCK_TABLE_ADDR,"NEW_BAD_BLOCK_TABLE");
+	GK_MMAP_PRINT(RETRY_LIMIT_TABLE_ADDR,"RETRY_LIMIT_TABLE");
+	GK_MMAP_PRINT(WAY_PRIORITY_TABLE_ADDR,"WAY_PRIORITY_TABLE");
+
 	xil_printf("!!! Wait until FTL reset complete !!! \r\n");
 
 	LRUBufInit();
@@ -102,16 +126,15 @@ void nvme_main()
 
 	InitFtlMapTable();
 
-	// gunjae: display memory map information
-	GK_INIT_PRINT("mmap (MB): buffer_addr: 0x%X\r\n", BUFFER_ADDR >> 20);
-	GK_INIT_PRINT("mmap (MB): spare_addr: 0x%X\r\n", SPARE_ADDR >> 20);
-	GK_INIT_PRINT("mmap (MB): gc_buffer_addr: 0x%X\r\n", GC_BUFFER_ADDR >> 20);
-	GK_INIT_PRINT("mmap (MB): complete_table_addr: 0x%X\r\n", COMPLETE_TABLE_ADDR >> 20);
-	GK_INIT_PRINT("mmap (MB): buffer_map_addr: 0x%X\r\n", BUFFER_MAP_ADDR >> 20);
-	GK_INIT_PRINT("mmap (MB): page_map_addr: 0x%X\r\n", PAGE_MAP_ADDR >> 20);
-	GK_INIT_PRINT("mmap (MB): req_queue_addr: 0x%X\r\n", REQ_QUEUE_ADDR >> 20);
-	GK_INIT_PRINT("mmap (MB): die_status_table_addr: 0x%X\r\n", DIE_STATUS_TABLE_ADDR >> 20);
-	GK_INIT_PRINT("mmap (MB): way_priority_table_addr (last): 0x%X\r\n", WAY_PRIORITY_TABLE_ADDR >> 20);
+//	GK_INIT_PRINT("mmap (MB): buffer_addr: 0x%X -> %d\r\n", BUFFER_ADDR >> 20);
+//	GK_INIT_PRINT("mmap (MB): spare_addr: 0x%X\r\n", SPARE_ADDR >> 20);
+//	GK_INIT_PRINT("mmap (MB): gc_buffer_addr: 0x%X\r\n", GC_BUFFER_ADDR >> 20);
+//	GK_INIT_PRINT("mmap (MB): complete_table_addr: 0x%X\r\n", COMPLETE_TABLE_ADDR >> 20);
+//	GK_INIT_PRINT("mmap (MB): buffer_map_addr: 0x%X\r\n", BUFFER_MAP_ADDR >> 20);
+//	GK_INIT_PRINT("mmap (MB): page_map_addr: 0x%X\r\n", PAGE_MAP_ADDR >> 20);
+//	GK_INIT_PRINT("mmap (MB): req_queue_addr: 0x%X\r\n", REQ_QUEUE_ADDR >> 20);
+//	GK_INIT_PRINT("mmap (MB): die_status_table_addr: 0x%X\r\n", DIE_STATUS_TABLE_ADDR >> 20);
+//	GK_INIT_PRINT("mmap (MB): way_priority_table_addr (last): 0x%X\r\n", WAY_PRIORITY_TABLE_ADDR >> 20);
 
 	// gunjae: tick, this value is reset here, and accumulated by every while loop
 	g_tick = 0;
