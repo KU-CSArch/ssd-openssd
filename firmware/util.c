@@ -32,3 +32,12 @@ inline unsigned char parse_flags_from_nvme_io_cmd(NVME_IO_COMMAND *nvmeIOCmd)
 
 	return (flags);
 }
+
+inline unsigned char get_flags_from_cmd_slot_tag(unsigned int cmdSlotTag)
+{
+	unsigned int cmdAddr = NVME_CMD_SRAM_ADDR + (cmdSlotTag * 64);
+	unsigned int cmdDword = IO_READ32(cmdAddr);
+	unsigned char flags = (cmdDword & 0xFF00) >> 8;
+
+	return (flags);
+}

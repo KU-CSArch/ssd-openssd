@@ -103,12 +103,15 @@ void nvme_main()
 	InitFtlMapTable();
 
 	// gunjae: display memory map information
-	GK_INIT_PRINT("mmap (KB): buffer_addr: 0x%X\r\n", BUFFER_ADDR >> 10);
-	GK_INIT_PRINT("mmap (KB): buffer_map_addr: 0x%X\r\n", BUFFER_MAP_ADDR >> 10);
-	GK_INIT_PRINT("mmap (KB): page_map_addr: 0x%X\r\n", PAGE_MAP_ADDR >> 10);
-	GK_INIT_PRINT("mmap (KB): req_queue_addr: 0x%X\r\n", REQ_QUEUE_ADDR >> 10);
-	GK_INIT_PRINT("mmap (KB): die_status_table_addr: 0x%X\r\n", DIE_STATUS_TABLE_ADDR >> 10);
-	GK_INIT_PRINT("mmap (KB): way_priority_table_addr (last): 0x%X\r\n", WAY_PRIORITY_TABLE_ADDR >> 10);
+	GK_INIT_PRINT("mmap (MB): buffer_addr: 0x%X\r\n", BUFFER_ADDR >> 20);
+	GK_INIT_PRINT("mmap (MB): spare_addr: 0x%X\r\n", SPARE_ADDR >> 20);
+	GK_INIT_PRINT("mmap (MB): gc_buffer_addr: 0x%X\r\n", GC_BUFFER_ADDR >> 20);
+	GK_INIT_PRINT("mmap (MB): complete_table_addr: 0x%X\r\n", COMPLETE_TABLE_ADDR >> 20);
+	GK_INIT_PRINT("mmap (MB): buffer_map_addr: 0x%X\r\n", BUFFER_MAP_ADDR >> 20);
+	GK_INIT_PRINT("mmap (MB): page_map_addr: 0x%X\r\n", PAGE_MAP_ADDR >> 20);
+	GK_INIT_PRINT("mmap (MB): req_queue_addr: 0x%X\r\n", REQ_QUEUE_ADDR >> 20);
+	GK_INIT_PRINT("mmap (MB): die_status_table_addr: 0x%X\r\n", DIE_STATUS_TABLE_ADDR >> 20);
+	GK_INIT_PRINT("mmap (MB): way_priority_table_addr (last): 0x%X\r\n", WAY_PRIORITY_TABLE_ADDR >> 20);
 
 	// gunjae: tick, this value is reset here, and accumulated by every while loop
 	g_tick = 0;

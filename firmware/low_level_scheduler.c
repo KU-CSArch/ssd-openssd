@@ -121,7 +121,7 @@ void PushToReqQueue(P_LOW_LEVEL_REQ_INFO lowLevelCmd)
 	dieStatusTable->dieStatusEntry[chNo][wayNo].reqQueueEmpty = 0;
 	rear = rqPointer->rqPointerEntry[chNo][wayNo].rear;
 	// gunjae: RxDMA for write commands
-	if(lowLevelCmd->request >= LLSCommand_RxDMA)
+	if(lowLevelCmd->request >= LLSCommand_RxDMA)	// LLSCommand_TxDMA also
 	{
 		reqQueue->reqEntry[rear][chNo][wayNo].devAddr = lowLevelCmd->devAddr;
 		reqQueue->reqEntry[rear][chNo][wayNo].cmdSlotTag = lowLevelCmd->cmdSlotTag;
@@ -129,9 +129,17 @@ void PushToReqQueue(P_LOW_LEVEL_REQ_INFO lowLevelCmd)
 		reqQueue->reqEntry[rear][chNo][wayNo].subReqSect = lowLevelCmd->subReqSect;
 		reqQueue->reqEntry[rear][chNo][wayNo].bufferEntry = lowLevelCmd->bufferEntry;
 		reqQueue->reqEntry[rear][chNo][wayNo].request = lowLevelCmd->request;
+	#if (DMA_DIRECT_TEST==1)
+		unsigned char flags = get_flags_from_cmd_slot_tag(lowLevelCmd->cmdSlotTag);
+		//GK_PRINT("GK: flags[%d] DIRECT DMA reserved\r\n", flags);
+		if (flags==2) {
+			GK_PRINT("GK: flags[%d] DIRECT DMA reserved\r\n", flags);
+			reqQueue->reqEntry[rear][chNo][wayNo].reserved = 99;
+		}
+	#endif	// DMA_DIRECT_TEST
 		rqPointer->rqPointerEntry[chNo][wayNo].rear = (rear + 1) % REQ_QUEUE_DEPTH;
 	}
-	else	// LLSCommand_TxDMA
+	else
 	{
 		if(BIT_PER_FLASH_CELL == SLC_MODE)
 		{
@@ -172,15 +180,8 @@ void PushToReqQueue(P_LOW_LEVEL_REQ_INFO lowLevelCmd)
 		reqQueue->reqEntry[rear][chNo][wayNo].statusOption = STATUS_CHECK;
 		reqQueue->reqEntry[rear][chNo][wayNo].request = lowLevelCmd->request;
 		rqPointer->rqPointerEntry[chNo][wayNo].rear = (rear + 1) % REQ_QUEUE_DEPTH;
-		// gunjae: added (bug??)
-		reqQueue->reqEntry[rear][chNo][wayNo].cmdSlotTag = lowLevelCmd->cmdSlotTag;
-	#if (DMA_DIRECT_TEST==1)
-		unsigned int cmdAddr = NVME_CMD_SRAM_ADDR + (lowLevelCmd->cmdSlotTag * 64);
-		unsigned int cmdDword = IO_READ32(cmdAddr);
-		unsigned char flags = (cmdDword & 0xFF00) >> 8;	// 
-		if (flags==2)
-			reqQueue->reqEntry[rear][chNo][wayNo].reserved = 0x99;
-	#endif	// DMA_DIRECT_TEST
+		// gunjae: added (bug??) -> not bug
+		//reqQueue->reqEntry[rear][chNo][wayNo].cmdSlotTag = lowLevelCmd->cmdSlotTag;
 	}
 }
 
@@ -242,7 +243,7 @@ int PopFromReqQueue(int chNo, int wayNo)
 		unsigned int sectorOffset = 0;
 		unsigned int bufferEntry = reqQueue->reqEntry[front][chNo][wayNo].bufferEntry;
 	#if (DMA_DIRECT_TEST==1)
-		unsigned int txSpcode = (reqQueue->reqEntry[front][chNo][wayNo].reserved==0x99) ? 1: 0;
+		unsigned char txSpcode = (reqQueue->reqEntry[front][chNo][wayNo].reserved==99) ? 1: 0;
 		unsigned int ptr_spcode_page_filtered_out = &spcode;
 	#endif
 		//unsigned int ptr_spcode_page_filtered_out = &g_spcode_page_filtered_out;
@@ -251,13 +252,14 @@ int PopFromReqQueue(int chNo, int wayNo)
 		if (txSpcode)
 		{
 			// gunjae: direct DMA
-			GK_DMA_PRINT("GK: DIRECT DMA\r\n");
 			unsigned int cmdAddr;
 			unsigned int prp[2];
 			//unsigned int prpLen;
 			cmdAddr = NVME_CMD_SRAM_ADDR + (reqQueue->reqEntry[front][chNo][wayNo].cmdSlotTag * 64);
 			*(prp + 0) = IO_READ32(cmdAddr + 6*4);
 			*(prp + 1) = IO_READ32(cmdAddr + 7*4);
+			unsigned char flags = get_flags_from_cmd_slot_tag(reqQueue->reqEntry[front][chNo][wayNo].cmdSlotTag);
+			GK_PRINT("GK: DIRECT DMA (flag=%d)\r\n", flags);
 			set_direct_tx_dma( ptr_spcode_page_filtered_out, prp[1], prp[0], sizeof(unsigned int) );
 			check_direct_tx_dma_done();
 			bufMap->bufEntry[bufferEntry].txDmaExe = 0;	// no dma check

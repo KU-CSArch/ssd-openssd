@@ -19,12 +19,14 @@
 #define _UTIL_H_
 
 #include "nvme/nvme.h"
+#include "nvme/host_lld.h"
+#include "nvme/io_access.h"
 #include "xil_printf.h"	// for printf()
 
 // Special code for in-SSD functions
 #define SPC_PAGE_FILTERED_OUT 9999
 
-#define DMA_DIRECT_TEST 0
+#define DMA_DIRECT_TEST 1
 
 // logging on/off (yunho's)
 //#define FI_PRINT 0
@@ -40,16 +42,19 @@
 	#define GK_PRINT(args...) xil_printf(args)
 	#define GK_INIT_PRINT(args...) xil_printf(args)
 	#define GK_CMD_PRINT(args...) xil_printf(args)
+	#define GK_BUF_PRINT(args...) xil_printf(args)
 	#define GK_DMA_PRINT(args...) xil_printf(args)
 	#define GK_FTL_PRINT(args...) xil_printf(args)
 #else
 	#define GK_PRINT(args...) xil_printf(args)
 	#define GK_INIT_PRINT(args...)
 	#define GK_CMD_PRINT(args...)
+	#define GK_BUF_PRINT(args...)
 	#define GK_DMA_PRINT(args...)
 	#define GK_FTL_PRINT(args...)
 #endif	// VERBOSE
 
 inline unsigned char parse_flags_from_nvme_io_cmd(NVME_IO_COMMAND *nvmeIOCmd);
+inline unsigned char get_flags_from_cmd_slot_tag(unsigned int cmdSlotTag);
 
 #endif	// _UTIL_H_

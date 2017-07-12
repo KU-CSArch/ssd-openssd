@@ -210,6 +210,9 @@ void LRUBufRead(P_HOST_REQ_INFO hostCmd)
 		lowLevelCmd.bufferEntry = hitEntry;
 		lowLevelCmd.request = LLSCommand_TxDMA;
 
+		unsigned char flags = get_flags_from_cmd_slot_tag(hostCmd->cmdSlotTag);
+		GK_BUF_PRINT("BUF hit [%d]: devAddr[%X] subReqSect[%d] bufEntry[%d] flags[%d]\r\n", hostCmd->cmdSlotTag, devAddr, subReqSect, hitEntry, flags);
+
 		PushToReqQueue(&lowLevelCmd);
 		dmaIndex += lowLevelCmd.subReqSect;
 
@@ -246,6 +249,9 @@ void LRUBufRead(P_HOST_REQ_INFO hostCmd)
 			bufLruList->bufLruEntry[dieNo].tail = bufferCmd.bufferEntry;
 		}
 		bufMap->bufEntry[bufferCmd.bufferEntry].lpn = tempLpn;
+
+		//unsigned char flags = get_flags_from_cmd_slot_tag(hostCmd->cmdSlotTag);
+		GK_BUF_PRINT("BUF miss [%d]: devAddr[%X] subReqSect[%d] \r\n", hostCmd->cmdSlotTag, bufferCmd.devAddr, bufferCmd.subReqSect);
 
 		PmRead(&bufferCmd);
 		dmaIndex += bufferCmd.subReqSect;
