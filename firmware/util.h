@@ -21,6 +21,9 @@
 #include "nvme/nvme.h"
 #include "xil_printf.h"	// for printf()
 
+// Special code for in-SSD functions
+#define SPC_PAGE_FILTERED_OUT 9999
+
 #define DMA_DIRECT_TEST 0
 
 // logging on/off (yunho's)

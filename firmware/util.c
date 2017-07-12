@@ -18,7 +18,7 @@
 #include "util.h"
 
 // special code for in-SSD processing (EXTERN)
-unsigned int g_spcode_page_filtered_out = 99999999;
+//unsigned int g_spcode_page_filtered_out = 99999999;
 
 inline unsigned char parse_flags_from_nvme_io_cmd(NVME_IO_COMMAND *nvmeIOCmd)
 {

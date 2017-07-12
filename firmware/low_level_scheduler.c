@@ -90,7 +90,7 @@
 #include "util.h"
 #include "nvme/io_access.h"
 
-extern unsigned int g_spcode_page_filtered_out;
+//extern unsigned int g_spcode_page_filtered_out;
 extern unsigned int g_tick;
 ////////////
 
@@ -130,12 +130,8 @@ void PushToReqQueue(P_LOW_LEVEL_REQ_INFO lowLevelCmd)
 		reqQueue->reqEntry[rear][chNo][wayNo].bufferEntry = lowLevelCmd->bufferEntry;
 		reqQueue->reqEntry[rear][chNo][wayNo].request = lowLevelCmd->request;
 		rqPointer->rqPointerEntry[chNo][wayNo].rear = (rear + 1) % REQ_QUEUE_DEPTH;
-	#if (DMA_DIRECT_TEST==1)
-		if (g_tick%2==0)
-			reqQueue->reqEntry[rear][chNo][wayNo].reserved = 0x99;
-	#endif
 	}
-	else
+	else	// LLSCommand_TxDMA
 	{
 		if(BIT_PER_FLASH_CELL == SLC_MODE)
 		{
@@ -176,6 +172,15 @@ void PushToReqQueue(P_LOW_LEVEL_REQ_INFO lowLevelCmd)
 		reqQueue->reqEntry[rear][chNo][wayNo].statusOption = STATUS_CHECK;
 		reqQueue->reqEntry[rear][chNo][wayNo].request = lowLevelCmd->request;
 		rqPointer->rqPointerEntry[chNo][wayNo].rear = (rear + 1) % REQ_QUEUE_DEPTH;
+		// gunjae: added (bug??)
+		reqQueue->reqEntry[rear][chNo][wayNo].cmdSlotTag = lowLevelCmd->cmdSlotTag;
+	#if (DMA_DIRECT_TEST==1)
+		unsigned int cmdAddr = NVME_CMD_SRAM_ADDR + (lowLevelCmd->cmdSlotTag * 64);
+		unsigned int cmdDword = IO_READ32(cmdAddr);
+		unsigned char flags = (cmdDword & 0xFF00) >> 8;	// 
+		if (flags==2)
+			reqQueue->reqEntry[rear][chNo][wayNo].reserved = 0x99;
+	#endif	// DMA_DIRECT_TEST
 	}
 }
 
@@ -231,14 +236,16 @@ int PopFromReqQueue(int chNo, int wayNo)
 	}
 	else if (request == LLSCommand_TxDMA)
 	{
+		unsigned int spcode = SPC_PAGE_FILTERED_OUT;
 		unsigned int devAddr = reqQueue->reqEntry[front][chNo][wayNo].devAddr;
 		unsigned int dmaIndex = reqQueue->reqEntry[front][chNo][wayNo].startDmaIndex;
 		unsigned int sectorOffset = 0;
 		unsigned int bufferEntry = reqQueue->reqEntry[front][chNo][wayNo].bufferEntry;
 	#if (DMA_DIRECT_TEST==1)
 		unsigned int txSpcode = (reqQueue->reqEntry[front][chNo][wayNo].reserved==0x99) ? 1: 0;
+		unsigned int ptr_spcode_page_filtered_out = &spcode;
 	#endif
-		unsigned int ptr_spcode_page_filtered_out = &g_spcode_page_filtered_out;
+		//unsigned int ptr_spcode_page_filtered_out = &g_spcode_page_filtered_out;
 
 	#if (DMA_DIRECT_TEST==1)
 		if (txSpcode)
