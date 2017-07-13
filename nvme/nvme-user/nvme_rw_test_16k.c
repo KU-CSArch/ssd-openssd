@@ -17,7 +17,7 @@
 #define EN_WR (1 | EN_CHECK_ERR)
 #define LBA_BASE 0x200
 #define PAGE_PER_CMD 1
-#define ITER 1
+#define ITER 4
 
 // sector size = 4k (os default?)
 // page size = 16k (16384 bytes)
@@ -103,6 +103,8 @@ int main(int argc, char **argv)
 	//sleep(10);
 	
 	// gunjae: read commands
+	for (i = 0; i < 16384; i++) ((char *)data_rd)[i] = 0;
+
 	io.opcode = nvme_cmd_read;
 	clock_gettime(CLOCK_MONOTONIC, &time_start);
 	for (i = 0; i < ITER; i++) {
@@ -134,9 +136,9 @@ int main(int argc, char **argv)
 	fprintf(stdout, "ERR: %ld / %ld = %lf \n", n_err, n_byte, (double)n_err/n_byte);
 #endif
 
-	//printf("\n");
-	//for (i = 0; i < 4096; i++) printf("%u ", ((char *)data_rd)[i]);
-	//printf("\n");
+	printf("\n");
+	for (i = 0; i < 10; i++) printf("%u ", ((char *)data_rd)[i]);
+	printf("\n");
 	return 0;
 
  perror:
