@@ -244,7 +244,8 @@ int PopFromReqQueue(int chNo, int wayNo)
 		unsigned int bufferEntry = reqQueue->reqEntry[front][chNo][wayNo].bufferEntry;
 	#if (DMA_DIRECT_TEST==1)
 		unsigned char txSpcode = (reqQueue->reqEntry[front][chNo][wayNo].reserved==99) ? 1: 0;
-		unsigned int ptr_spcode_page_filtered_out = &spcode;
+		unsigned int ptr_spcode_page_filtered_out = PAGE_TEMP_BUFFER_ADDR;	// slot 0
+		//unsigned int ptr_spcode_page_filtered_out = &spcode;
 	#endif
 		//unsigned int ptr_spcode_page_filtered_out = &g_spcode_page_filtered_out;
 
@@ -260,7 +261,8 @@ int PopFromReqQueue(int chNo, int wayNo)
 			*(prp + 1) = IO_READ32(cmdAddr + 7*4);
 			unsigned char flags = get_flags_from_cmd_slot_tag(reqQueue->reqEntry[front][chNo][wayNo].cmdSlotTag);
 			GK_PRINT("GK: DIRECT DMA (flag=%d)\r\n", flags);
-			set_direct_tx_dma( ptr_spcode_page_filtered_out, prp[1], prp[0], sizeof(unsigned int) );
+			memset( ptr_spcode_page_filtered_out, 99, 4);
+			set_direct_tx_dma( ptr_spcode_page_filtered_out, prp[1], prp[0], 4 );
 			check_direct_tx_dma_done();
 			bufMap->bufEntry[bufferEntry].txDmaExe = 0;	// no dma check
 			// completion
